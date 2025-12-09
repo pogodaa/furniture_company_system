@@ -241,7 +241,7 @@ def import_material_types(session):
             logger.error(f"Строка {idx + 2}: Неожиданная ошибка: {e}")
     
     session.commit()
-    logger.info(f"✅ Импортировано {imported_count} типов материалов, ошибок: {error_count}")
+    logger.info(f"Импортировано {imported_count} типов материалов, ошибок: {error_count}")
 
 def import_product_types(session):
     """Импорт типов продукции с валидацией"""
@@ -290,7 +290,7 @@ def import_product_types(session):
             logger.error(f"Строка {idx + 2}: Неожиданная ошибка: {e}")
     
     session.commit()
-    logger.info(f"✅ Импортировано {imported_count} типов продукции, ошибок: {error_count}")
+    logger.info(f"Импортировано {imported_count} типов продукции, ошибок: {error_count}")
 
 def import_workshops(session):
     """Импорт цехов с валидацией"""
@@ -364,7 +364,7 @@ def import_workshops(session):
             logger.error(f"Строка {idx + 2}: Неожиданная ошибка: {e}")
     
     session.commit()
-    logger.info(f"✅ Импортировано {imported_count} цехов, ошибок: {error_count}")
+    logger.info(f"Импортировано {imported_count} цехов, ошибок: {error_count}")
 
 def import_products(session):
     """Импорт продукции с валидацией"""
@@ -457,7 +457,7 @@ def import_products(session):
     
     session.commit()
     logger.info(
-        f"✅ Импортировано {imported_count} продуктов, "
+        f"Импортировано {imported_count} продуктов, "
         f"пропущено: {skipped_count}, ошибок: {error_count}"
     )
 
@@ -552,7 +552,7 @@ def import_product_workshop_links(session):
     
     session.commit()
     logger.info(
-        f"✅ Импортировано {imported_count} связей, "
+        f"Импортировано {imported_count} связей, "
         f"пропущено: {skipped_count}, ошибок: {error_count}"
     )
 
@@ -576,7 +576,7 @@ def main():
             import_product_workshop_links(session)
             
             print("\n" + "=" * 70)
-            print("✅ ИМПОРТ УСПЕШНО ЗАВЕРШЕН!")
+            print("ИМПОРТ УСПЕШНО ЗАВЕРШЕН!")
             print("=" * 70)
             
             # Выводим статистику
@@ -598,7 +598,7 @@ def print_statistics(session):
     """Вывод статистики базы данных"""
     from sqlalchemy import func
     
-    print("\n📊 СТАТИСТИКА БАЗЫ ДАННЫХ:")
+    print("\nСТАТИСТИКА БАЗЫ ДАННЫХ:")
     print("-" * 40)
     
     tables = [
@@ -622,23 +622,23 @@ def print_statistics(session):
     
     # Проверка отрицательных значений
     negative_prices = session.query(Product).filter(Product.min_partner_price < 0).count()
-    print(f"✅ Отрицательных цен: {negative_prices}")
+    print(f"Отрицательных цен: {negative_prices}")
     
     negative_time = session.query(product_workshop_table)\
         .filter(product_workshop_table.c.manufacturing_time_hours < 0)\
         .count()
-    print(f"✅ Отрицательного времени: {negative_time}")
+    print(f"Отрицательного времени: {negative_time}")
     
     # Проверка целостности
     products_without_type = session.query(Product)\
         .filter(~Product.product_type_id.in_(session.query(ProductType.id)))\
         .count()
-    print(f"✅ Продуктов без типа: {products_without_type}")
+    print(f"Продуктов без типа: {products_without_type}")
     
     products_without_material = session.query(Product)\
         .filter(~Product.material_id.in_(session.query(MaterialType.id)))\
         .count()
-    print(f"✅ Продуктов без материала: {products_without_material}")
+    print(f"Продуктов без материала: {products_without_material}")
 
 if __name__ == "__main__":
     main()

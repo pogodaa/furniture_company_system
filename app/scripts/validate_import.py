@@ -1,46 +1,3 @@
-"""
-validate_import.py - Проверка соответствия импортированных данных исходным Excel файлам
-"""
-
-
-'''    def check_material_types(self):
-        """Проверка типов материалов"""
-        logger.info("\n🔍 Проверка типов материалов...")
-        
-        try:
-            # 1. Проверяем количество
-            excel_file = EXCEL_FILES['material_types']
-            df = pd.read_excel(excel_file)
-            excel_count = len(df)
-            
-            db_count = self.session.query(MaterialType).count()
-            
-            self._add_result(
-                excel_count == db_count,
-                f"Типы материалов: совпадение количества (Excel: {excel_count}, БД: {db_count})"
-            )
-            
-            # 2. Проверяем каждую запись
-            for _, row in df.iterrows():
-                material_name = str(row['Тип материала']).strip()
-                loss_percentage = float(str(row['Процент потерь сырья']).replace('%', '')) / 100
-                
-                material = self.session.query(MaterialType).filter_by(name=material_name).first()
-                
-                if material:
-                    if abs(material.loss_percentage - loss_percentage) < 0.001:
-                        self._add_result(True, f"Материал '{material_name}' корректно импортирован")
-                    else:
-                        self._add_result(
-                            False, 
-                            f"Материал '{material_name}': несовпадение процентов "
-                            f"(Excel: {loss_percentage:.4f}, БД: {material.loss_percentage:.4f})"
-                        )
-                else:
-                    self._add_result(False, f"Материал '{material_name}' не найден в БД")
-                    
-        except Exception as e:
-            self._add_result(False, f"Ошибка проверки типов материалов: {e}")'''
 
 import sys
 from pathlib import Path
@@ -76,10 +33,10 @@ class ImportValidator:
         self.results['total_checks'] += 1
         if success:
             self.results['passed_checks'] += 1
-            self.results['details'].append(f"✅ {message}")
+            self.results['details'].append(f"{message}")
         else:
             self.results['failed_checks'] += 1
-            self.results['details'].append(f"❌ {message}")
+            self.results['details'].append(f"{message}")
     
     def c(self):
         return 0

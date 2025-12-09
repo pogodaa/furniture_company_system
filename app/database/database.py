@@ -41,7 +41,7 @@ def setup_sqlite(dbapi_connection, connection_record):
 
 # Базовый класс для всех моделей
 class Base(DeclarativeBase):
-    pass
+    pass        # Pass потому что нет общих полей, не нужны кастомные типы данных, не нужны общие методы для всех моделей и в целом всё работает и так)
 
 # Таблица связи многие-ко-многим
 product_workshop_table = Table(
@@ -58,7 +58,7 @@ product_workshop_table = Table(
            nullable=False, default=0.0)
 )
 
-# Модель: Тип материала
+# Таблица: Тип материала
 class MaterialType(Base):
     __tablename__ = "material_types"
     
@@ -72,7 +72,7 @@ class MaterialType(Base):
     def __repr__(self):
         return f"MaterialType(id={self.id}, name={self.name})"
 
-# Модель: Тип продукции
+# Таблица: Тип продукции
 class ProductType(Base):
     __tablename__ = "product_types"
     
@@ -86,7 +86,7 @@ class ProductType(Base):
     def __repr__(self):
         return f"ProductType(id={self.id}, name={self.name})"
 
-# Модель: Цех
+# Таблица: Цех
 class Workshop(Base):
     __tablename__ = "workshops"
     
@@ -105,7 +105,7 @@ class Workshop(Base):
     def __repr__(self):
         return f"Workshop(id={self.id}, name={self.name})"
 
-# Модель: Продукт
+# Таблица: Продукт
 class Product(Base):
     __tablename__ = "products"
     
