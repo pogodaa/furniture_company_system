@@ -58,7 +58,7 @@ product_workshop_table = Table(
            nullable=False, default=0.0)
 )
 
-# Таблица: Тип материала
+# Модель: Тип материала
 class MaterialType(Base):
     __tablename__ = "material_types"
     
@@ -72,7 +72,7 @@ class MaterialType(Base):
     def __repr__(self):
         return f"MaterialType(id={self.id}, name={self.name})"
 
-# Таблица: Тип продукции
+# Модель: Тип продукции
 class ProductType(Base):
     __tablename__ = "product_types"
     
@@ -86,7 +86,7 @@ class ProductType(Base):
     def __repr__(self):
         return f"ProductType(id={self.id}, name={self.name})"
 
-# Таблица: Цех
+# Модель: Цех
 class Workshop(Base):
     __tablename__ = "workshops"
     
@@ -105,7 +105,7 @@ class Workshop(Base):
     def __repr__(self):
         return f"Workshop(id={self.id}, name={self.name})"
 
-# Таблица: Продукт
+# Модель: Продукт
 class Product(Base):
     __tablename__ = "products"
     
