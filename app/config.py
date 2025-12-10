@@ -1,6 +1,3 @@
-"""
-config.py - Настройки проекта и пути
-"""
 
 import os
 from pathlib import Path
@@ -26,3 +23,5 @@ EXCEL_FILES = {
     'products': SOURCE_DATA_DIR / 'Products_import.xlsx',
     'product_workshop': SOURCE_DATA_DIR / 'Product_workshops_import.xlsx',
 }
+
+

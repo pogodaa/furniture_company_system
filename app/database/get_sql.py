@@ -77,7 +77,7 @@ def get_exact_schema():
     full_sql = "\n".join(all_sql)
     
     # Сохраняем в тот же каталог, где база данных
-    sql_file_path = output_dir / "db_schema.sql"
+    sql_file_path = output_dir / "db_sql.sql"
     with open(sql_file_path, "w", encoding="utf-8") as f:
         f.write(full_sql)
     
