@@ -1,43 +1,37 @@
-"""
-Схемы для цехов
-"""
-from pydantic import BaseModel
-from typing import List, Optional
+from pydantic import BaseModel, Field, validator
+from typing import Optional, List
 
 class WorkshopBase(BaseModel):
-    name: str
-    workshop_type: str
-    employee_count: int
+    """Базовые поля цеха"""
+    name: str = Field(..., min_length=1, max_length=100, description="Название цеха")
+    workshop_type: str = Field(..., min_length=1, max_length=50, description="Тип цеха")
+    employee_count: int = Field(..., gt=0, description="Количество человек для производства")
 
 class WorkshopCreate(WorkshopBase):
+    """Для создания цеха"""
     pass
 
 class WorkshopUpdate(BaseModel):
-    name: str | None = None
-    workshop_type: str | None = None
-    employee_count: int | None = None
+    """Для обновления цеха (все поля опциональны)"""
+    name: Optional[str] = Field(None, min_length=1, max_length=100)
+    workshop_type: Optional[str] = Field(None, min_length=1, max_length=50)
+    employee_count: Optional[int] = Field(None, gt=0)
 
 class WorkshopResponse(WorkshopBase):
+    """Ответ API для цеха"""
     id: int
     
     class Config:
         from_attributes = True
 
-
 class WorkshopProductResponse(BaseModel):
-    """Схема для отображения продуктов цеха"""
+    """Продукт в контексте цеха"""
     id: int
     name: str
     article: str
     min_partner_price: float
-    product_type_name: Optional[str] = None  # Название типа вместо ID
-    material_name: Optional[str] = None      # Название материала вместо ID
+    product_type_name: str
+    material_name: str
     
     class Config:
         from_attributes = True
-
-class WorkshopProductsResponse(BaseModel):
-    """Полный ответ с продуктами цеха"""
-    workshop_id: int
-    workshop_name: str
-    products: List[WorkshopProductResponse]

@@ -1,16 +1,39 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validator
+from decimal import Decimal
+from typing import Optional
 
 class ProductBase(BaseModel):
     """Базовые поля продукта"""
-    article: str
-    name: str
-    product_type_id: int
-    material_id: int
-    min_partner_price: float
+    article: str = Field(..., min_length=1, max_length=50, description="Артикул продукта")
+    name: str = Field(..., min_length=1, max_length=200, description="Наименование продукта")
+    product_type_id: int = Field(..., gt=0, description="ID типа продукции")
+    material_id: int = Field(..., gt=0, description="ID материала")
+    min_partner_price: float = Field(..., gt=0, description="Минимальная стоимость для партнера")
+
+    @validator('min_partner_price')
+    def validate_price(cls, v):
+        """Валидация стоимости - не может быть отрицательной"""
+        if v < 0:
+            raise ValueError('Стоимость не может быть отрицательной')
+        return round(v, 2)  # Округляем до сотых
 
 class ProductCreate(ProductBase):
     """Для создания продукта"""
     pass
+
+class ProductUpdate(BaseModel):
+    """Для обновления продукта (все поля опциональны)"""
+    article: Optional[str] = Field(None, min_length=1, max_length=50)
+    name: Optional[str] = Field(None, min_length=1, max_length=200)
+    product_type_id: Optional[int] = Field(None, gt=0)
+    material_id: Optional[int] = Field(None, gt=0)
+    min_partner_price: Optional[float] = Field(None, gt=0)
+    
+    @validator('min_partner_price')
+    def validate_price(cls, v):
+        if v is not None and v < 0:
+            raise ValueError('Стоимость не может быть отрицательной')
+        return round(v, 2) if v is not None else None
 
 class ProductResponse(BaseModel):
     """

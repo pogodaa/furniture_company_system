@@ -1,14 +1,15 @@
 """
 Эндпоинты для цехов
 """
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
 
 from app.database.session import get_db
 from app.crud.workshops import workshop_crud
-from app.schemas.workshop import WorkshopResponse, WorkshopProductResponse
-
+from app.schemas.workshop import (
+    WorkshopResponse, WorkshopCreate, WorkshopUpdate, WorkshopProductResponse
+)
 
 # Создаем роутер
 router = APIRouter(prefix="/workshops", tags=["Workshops"])
@@ -37,6 +38,52 @@ def get_workshop(
     if not workshop:
         raise HTTPException(status_code=404, detail="Цех не найден")
     return workshop
+
+@router.post("/", response_model=WorkshopResponse, status_code=status.HTTP_201_CREATED)
+def create_workshop(
+    workshop_data: WorkshopCreate,
+    db: Session = Depends(get_db)
+):
+    """
+    Создать новый цех
+    
+    - **name**: Название цеха
+    - **workshop_type**: Тип цеха
+    - **employee_count**: Количество человек для производства
+    """
+    workshop = workshop_crud.create(db, workshop_data)
+    return workshop
+
+@router.put("/{workshop_id}", response_model=WorkshopResponse)
+def update_workshop(
+    workshop_id: int,
+    workshop_data: WorkshopUpdate,
+    db: Session = Depends(get_db)
+):
+    """
+    Обновить цех по ID
+    
+    Все поля опциональны. Обновляются только переданные поля.
+    """
+    workshop = workshop_crud.update(db, workshop_id, workshop_data)
+    if not workshop:
+        raise HTTPException(status_code=404, detail="Цех не найден")
+    return workshop
+
+@router.delete("/{workshop_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_workshop(
+    workshop_id: int,
+    db: Session = Depends(get_db)
+):
+    """
+    Удалить цех по ID
+    
+    Внимание: Нельзя удалить цех, если с ним связаны продукты!
+    """
+    success = workshop_crud.delete(db, workshop_id)
+    if not success:
+        raise HTTPException(status_code=404, detail="Цех не найден")
+    return None
 
 @router.get("/{workshop_id}/products")
 def get_workshop_products(
