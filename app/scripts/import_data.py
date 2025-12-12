@@ -149,9 +149,9 @@ class DataTypeValidator:
                 f"Поле '{field_name}': не удалось преобразовать '{original_value}' в число"
             ) from e
         
-        # Если число > 1 (например 0.80), преобразуем в доли (0.008)
-        if result > 1:
-            result = result / 100
+        # # Если число > 1 (например 0.80), преобразуем в доли (0.008)
+        # if result > 1:
+        #     result = result / 100
         
         # Проверяем, что процент в диапазоне 0-100%
         if result < 0:
@@ -185,6 +185,14 @@ def clean_number(value: Any) -> float:
     except ValueError as e:
         logger.warning(f"Ошибка валидации числа: {e}")
         return 0.0
+
+# def clean_percentage(value: Any) -> float:
+#     """Преобразование процентов с валидацией"""
+#     try:
+#         return DataTypeValidator.validate_percentage(value, "процент")
+#     except ValueError as e:
+#         logger.warning(f"Ошибка валидации процента: {e}")
+#         return 0.0
 
 def clean_percentage(value: Any) -> float:
     """Преобразование процентов с валидацией"""

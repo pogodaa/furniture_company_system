@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from typing import List
 
 from app.database.session import get_db
+from app.database.database import Product, ProductType
 from app.crud.workshops import workshop_crud
 from app.schemas.workshop import (
     WorkshopResponse, WorkshopCreate, WorkshopUpdate, WorkshopProductResponse
@@ -135,4 +136,85 @@ def get_workshop_products(
         "workshop_id": workshop_id,
         "workshop_name": workshop.name,
         "products": products_response
+    }
+
+
+@router.get("/{workshop_id}/production-report")
+def get_workshop_production_report(
+    workshop_id: int,
+    db: Session = Depends(get_db)
+):
+    """
+    Детальный отчет о производстве в цехе
+    
+    Для Задания 4: вывод списка цехов с указанием:
+    - Название цеха
+    - Количество человек для производства  
+    - Время, затрачиваемое на изготовление продукции
+    """
+    from app.database.database import product_workshop_table
+    from sqlalchemy import select, func
+    
+    # 1. Получаем цех
+    workshop = workshop_crud.get_by_id(db, workshop_id)
+    if not workshop:
+        raise HTTPException(status_code=404, detail="Цех не найден")
+    
+    # 2. Получаем продукты с временем изготовления
+    products_data = db.execute(
+        select(
+            product_workshop_table.c.product_id,
+            Product.name,
+            Product.article,
+            product_workshop_table.c.manufacturing_time_hours
+        )
+        .select_from(product_workshop_table)
+        .join(Product, Product.id == product_workshop_table.c.product_id)
+        .where(product_workshop_table.c.workshop_id == workshop_id)
+    ).fetchall()
+    
+    # 3. Рассчитываем статистику
+    products_list = []
+    total_hours = 0.0
+    
+    for prod_id, name, article, time in products_data:
+        time_float = float(time) if time else 0.0
+        products_list.append({
+            "product_id": prod_id,
+            "product_name": name,
+            "article": article,
+            "manufacturing_time_hours": time_float
+        })
+        total_hours += time_float
+    
+    # 4. Получаем тип продукции для каждого продукта
+    for product in products_list:
+        product_details = db.query(Product)\
+            .join(ProductType, Product.product_type_id == ProductType.id)\
+            .filter(Product.id == product["product_id"])\
+            .first()
+        if product_details:
+            product["product_type"] = product_details.product_type.name
+    
+    return {
+        "workshop": {
+            "id": workshop.id,
+            "name": workshop.name,
+            "type": workshop.workshop_type,
+            "employee_count": workshop.employee_count
+        },
+        "production_data": {
+            "products": products_list,
+            "total_products": len(products_list),
+            "total_manufacturing_hours": round(total_hours, 2),
+            "average_hours_per_product": round(
+                total_hours / len(products_list) if products_list else 0, 
+                2
+            ),
+            "employee_productivity": round(
+                total_hours / workshop.employee_count if workshop.employee_count > 0 else 0,
+                2
+            )
+        },
+        "report_generated": "Для интеграции в интерфейс системы"
     }
