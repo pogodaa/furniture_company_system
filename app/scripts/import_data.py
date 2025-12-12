@@ -127,10 +127,10 @@ class DataTypeValidator:
             )
         
         return result
-    
+
     @staticmethod
     def validate_percentage(value: Any, field_name: str) -> float:
-        """Валидация процентных значений"""
+        """Валидация процентных значений - храним как проценты (0.8 для 0.8%)"""
         if pd.isna(value) or value is None:
             raise ValueError(f"Поле '{field_name}' не может быть пустым")
         
@@ -139,8 +139,11 @@ class DataTypeValidator:
         # Обрабатываем проценты
         if isinstance(value, str):
             value = value.replace('%', '').strip()
-            # Заменяем запятую на точку для российского формата
             value = value.replace(',', '.')
+        elif isinstance(value, float):
+            # Если pandas уже преобразовал 0,80% в 0.008 (доли)
+            if value < 0.01:  # Если значение меньше 1% (в долях)
+                value = value * 100  # 0.008 → 0.8
         
         try:
             result = float(value)
@@ -149,14 +152,10 @@ class DataTypeValidator:
                 f"Поле '{field_name}': не удалось преобразовать '{original_value}' в число"
             ) from e
         
-        # # Если число > 1 (например 0.80), преобразуем в доли (0.008)
-        # if result > 1:
-        #     result = result / 100
-        
-        # Проверяем, что процент в диапазоне 0-100%
+        # ИСПРАВЛЕНИЕ: Проверяем диапазон 0-100 (а не 0-1)
         if result < 0:
             raise ValueError(f"Поле '{field_name}': процент не может быть отрицательным")
-        if result > 1:  # 100% в долях
+        if result > 100:  # 100% максимум (а не 1!)
             raise ValueError(f"Поле '{field_name}': процент не может превышать 100%")
         
         # Округляем до 4 знаков после запятой
