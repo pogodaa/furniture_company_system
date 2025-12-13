@@ -1,24 +1,22 @@
-sqlalchemy==2.0.23
-pandas==2.1.4
-openpyxl==3.1.2
-sqlalchemy-schemadisplay==1.3  # для ER-диаграммы
-
-
-# Основные
-sqlalchemy>=2.0.0
-pandas>=2.0.0
-openpyxl>=3.1.0
-python-dotenv>=1.0.0
-
-# Для ERD и визуализации
-graphviz>=0.20.0
-ipython>=8.0.0
-jupyter>=1.0.0
-
-
-
+# FastAPI и веб-фреймворки
 fastapi==0.104.1
 uvicorn[standard]==0.24.0
+python-multipart==0.0.6  # Для работы с формами
+
+# Валидация данных и конфигурация
 pydantic==2.5.0
 pydantic-settings==2.1.0
-python-multipart==0.0.6  # Для работы с формами
+python-dotenv>=1.0.0
+
+# База данных и ORM
+sqlalchemy==2.0.23
+
+# Работа с данными и Excel
+pandas==2.1.4
+openpyxl==3.1.2
+
+# Визуализация и документация
+graphviz>=0.20.0
+
+# Дополнительные (для разработки/отладки - опционально)
+ipython>=8.0.0      # Улучшенная консоль Python
