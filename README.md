@@ -80,13 +80,15 @@ cd furniture_company_system
 Для Windows:
 
 ```bash
-python -m venv venvvenvScriptsactivate
+python -m venv venv
+venv/Scripts/activate
 ```
 
 Для Linux/Mac:
 
 ```bash
-python3 -m venv venvsource venv/bin/activate
+python3 -m venv venv
+source venv/bin/activate
 ```
 
 ### Шаг 3: Установка зависимостей
