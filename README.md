@@ -80,15 +80,13 @@ cd furniture_company_system
 Для Windows:
 
 ```bash
-python -m venv venv
-venv\Scripts\activate
+python -m venv venvvenvScriptsactivate
 ```
 
 Для Linux/Mac:
 
 ```bash
-python3 -m venv venv
-source venv/bin/activate
+python3 -m venv venvsource venv/bin/activate
 ```
 
 ### Шаг 3: Установка зависимостей
@@ -156,14 +154,19 @@ INFO:     Will watch for changes in these directories: [...]INFO:     Uvicorn ru
 
 ### Веб-интерфейс (фронтенд)
 
+![Скриншот главной страницы](docs/assets/main.png)
 -   **Главная страница:** `http://localhost:8000/`
+![Скриншот страницы продукции](docs/assets/production.png)
 -   **Продукция:** `http://localhost:8000/products` - просмотр, добавление, редактирование
+![Скриншот страницы цехов](docs/assets/workshops.png)
 -   **Цеха:** `http://localhost:8000/workshops` - информация о производственных цехах
+![Скриншот страницы расчёта](docs/assets/raschet1.png)
+![Скриншот страницы расчёта](docs/assets/raschet2.png)
 -   **Расчет сырья:** `http://localhost:8000/calculations` - расчет необходимого количества сырья
 
 ### API документация (Swagger)
 
--   **Swagger UI:** `[http://localhost:8000/api/docs](http://localhost:8000/api/docs "http://localhost:8000/api/docs")`
+-   **Swagger UI:** `http://localhost:8000/api/docs`
 
 ## 🔍 Отладка и мониторинг
 
