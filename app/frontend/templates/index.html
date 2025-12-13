@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="welcome">
+    <h2>Добро пожаловать в систему учета мебельной компании!</h2>
+    <div class="info-cards">
+        <div class="card">
+            <h3>Продукция</h3>
+            <p>Просмотр, добавление и редактирование продукции компании</p>
+            <a href="/products" class="btn">Перейти к продукции</a>
+        </div>
+        <div class="card">
+            <h3>Цеха</h3>
+            <p>Информация о производственных цехах и отчетность</p>
+            <a href="/workshops" class="btn">Перейти к цехам</a>
+        </div>
+        <div class="card">
+            <h3>Расчет сырья</h3>
+            <p>Расчет необходимого количества сырья для производства</p>
+            <a href="/calculations" class="btn">Перейти к расчетам</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Список продукции</h2>
+    <a href="/products/add" class="btn btn-primary">Добавить продукт</a>
+</div>
+
+{% if error %}
+<div class="alert alert-error">
+    {{ error }}
+</div>
+{% endif %}
+
+{% if success %}
+<div class="alert alert-success">
+    {{ success }}
+</div>
+{% endif %}
+
+<div class="table-container">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Тип продукции</th>
+                <th>Наименование</th>
+                <th>Время изготовления (ч)</th>
+                <th>Артикул</th>
+                <th>Стоимость (₽)</th>
+                <th>Материал</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ product.product_type }}</td>
+                <td>{{ product.product_name }}</td>
+                <td class="text-center">{{ product.production_time }}</td>
+                <td>{{ product.article }}</td>
+                <td class="text-right">{{ "{:,.2f}".format(product.min_partner_price).replace(",", " ") }}</td>
+                <td>{{ product.main_material }}</td>
+                <td class="actions">
+                    <a href="/products/{{ product.id }}" class="btn-action btn-view" title="Просмотр">
+                        👁️
+                    </a>
+                    <a href="/products/edit/{{ product.id }}" class="btn-action btn-edit" title="Редактировать">
+                        ✏️
+                    </a>
+                    <form action="/products/delete/{{ product.id }}" method="post" 
+                          onsubmit="return confirm('Вы уверены, что хотите удалить этот продукт?');" 
+                          style="display: inline;">
+                        <button type="submit" class="btn-action btn-delete" title="Удалить">
+                            🗑️
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="pagination">
+    {% if page > 1 %}
+        <a href="/products?page={{ page-1 }}" class="btn">Назад</a>
+    {% endif %}
+    <span>Страница {{ page }}</span>
+    {% if has_next %}
+        <a href="/products?page={{ page+1 }}" class="btn">Вперед</a>
+    {% endif %}
+</div>
+{% endblock %}

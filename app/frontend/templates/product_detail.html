@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Детали продукции</h2>
+    <a href="/products" class="btn btn-secondary">Назад к списку</a>
+</div>
+
+<div class="detail-container">
+    <div class="detail-card">
+        <h3>Основная информация</h3>
+        <div class="detail-row">
+            <span class="detail-label">Наименование:</span>
+            <span class="detail-value">{{ product.product_name }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Артикул:</span>
+            <span class="detail-value">{{ product.article }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Тип продукции:</span>
+            <span class="detail-value">{{ product.product_type }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Основной материал:</span>
+            <span class="detail-value">{{ product.main_material }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Минимальная стоимость для партнера:</span>
+            <span class="detail-value">{{ "{:,.2f}".format(product.min_partner_price).replace(",", " ") }} ₽</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Общее время изготовления:</span>
+            <span class="detail-value">{{ product.production_time }} ч</span>
+        </div>
+    </div>
+
+    <div class="detail-card">
+        <h3>Производственные цеха</h3>
+        {% if workshops %}
+        <table class="simple-table">
+            <thead>
+                <tr>
+                    <th>Название цеха</th>
+                    <th>Тип цеха</th>
+                    <th>Количество человек</th>
+                    <th>Время изготовления (ч)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for workshop in workshops %}
+                <tr>
+                    <td>{{ workshop.workshop_name }}</td>
+                    <td>{{ workshop.workshop_type }}</td>
+                    <td class="text-center">{{ workshop.employee_count }}</td>
+                    <td class="text-center">{{ workshop.manufacturing_time_hours }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="summary">
+            <div class="summary-row">
+                <span class="summary-label">Всего цехов:</span>
+                <span class="summary-value">{{ total_workshops }}</span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-label">Всего сотрудников:</span>
+                <span class="summary-value">{{ total_employees }}</span>
+            </div>
+        </div>
+        {% else %}
+        <p class="no-data">Для этого продукта не назначены производственные цеха</p>
+        {% endif %}
+    </div>
+
+    <div class="detail-card">
+        <h3>Действия</h3>
+        <div class="action-buttons">
+            <a href="/products/edit/{{ product.id }}" class="btn btn-edit">Редактировать</a>
+            <form action="/products/delete/{{ product.id }}" method="post" 
+                  onsubmit="return confirm('Вы уверены, что хотите удалить этот продукт?');" 
+                  style="display: inline;">
+                <button type="submit" class="btn btn-danger">Удалить</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Расчет сырья для производства</h2>
+</div>
+
+{% if error %}
+<div class="alert alert-error">
+    <strong>Ошибка:</strong> {{ error }}
+</div>
+{% endif %}
+
+<div class="calculation-container">
+    <div class="form-card">
+        <h3>Параметры расчета</h3>
+        <form method="post" class="form-container">
+            <div class="form-group">
+                <label for="product_type_id">Тип продукции *</label>
+                <select id="product_type_id" name="product_type_id" required>
+                    <option value="">Выберите тип...</option>
+                    {% for type in product_types %}
+                    <option value="{{ type.id }}" 
+                            {% if result and result.product_type_id == type.id %}selected{% endif %}>
+                        {{ type.name }} (коэф. {{ type.coefficient }})
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="material_type_id">Тип материала *</label>
+                <select id="material_type_id" name="material_type_id" required>
+                    <option value="">Выберите материал...</option>
+                    {% for material in material_types %}
+                    <option value="{{ material.id }}" 
+                            {% if result and result.material_type_id == material.id %}selected{% endif %}>
+                        {{ material.name }} (потери {{ material.loss_percentage }}%)
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="product_quantity">Количество продукции (шт) *</label>
+                <input type="number" id="product_quantity" name="product_quantity" 
+                       min="1" 
+                       value="{% if result %}{{ result.product_quantity }}{% else %}1{% endif %}" 
+                       required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="param1">Параметр 1 (м) *</label>
+                    <input type="number" id="param1" name="param1" 
+                           step="0.01" min="0.01" 
+                           value="{% if result %}{{ result.param1 }}{% else %}1.00{% endif %}" 
+                           required>
+                </div>
+                <div class="form-group">
+                    <label for="param2">Параметр 2 (м) *</label>
+                    <input type="number" id="param2" name="param2" 
+                           step="0.01" min="0.01" 
+                           value="{% if result %}{{ result.param2 }}{% else %}1.00{% endif %}" 
+                           required>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Рассчитать</button>
+                <a href="/calculations" class="btn btn-secondary">Очистить</a>
+            </div>
+        </form>
+    </div>
+
+    {% if result %}
+    <div class="result-card">
+        <h3>Результат расчета</h3>
+        
+        {% if result.raw_material_quantity == -1 %}
+        <div class="alert alert-error">
+            <strong>Ошибка расчета!</strong> Проверьте правильность введенных данных.
+        </div>
+        {% else %}
+        <div class="result-summary">
+            <div class="result-value">
+                <span class="label">Необходимое количество сырья:</span>
+                <span class="value highlight">{{ result.raw_material_quantity }} ед.</span>
+            </div>
+        </div>
+
+        <div class="calculation-details">
+            <h4>Детали расчета:</h4>
+            <div class="detail-row">
+                <span class="label">Тип продукции:</span>
+                <span class="value">{{ result.calculation_details.product_type_name }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Материал:</span>
+                <span class="value">{{ result.calculation_details.material_name }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Коэффициент типа:</span>
+                <span class="value">{{ result.calculation_details.coefficient }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Процент потерь:</span>
+                <span class="value">{{ result.calculation_details.loss_percentage }}%</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Параметры изделия:</span>
+                <span class="value">{{ result.param1 }} м × {{ result.param2 }} м = {{ result.calculation_details.params_product }} м²</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Сырье на единицу:</span>
+                <span class="value">{{ result.calculation_details.material_per_unit }} ед.</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Без учета потерь:</span>
+                <span class="value">{{ result.calculation_details.total_without_loss }} ед.</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">С учетом потерь:</span>
+                <span class="value">{{ result.calculation_details.total_with_loss }} ед.</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Итого (округляем вверх):</span>
+                <span class="value highlight">{{ result.calculation_details.total_rounded }} ед.</span>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <div class="info-card">
+        <h3>Формула расчета</h3>
+        <p>Количество сырья = ceil( (Кол-во × Длина (Параметр1) × Ширина (Параметр2) × Коэффициент_типа) × (1 + Процент_потерь / 100) )</p>
+        <p class="formula-example">Пример: 10 × 2.5 × 1.8 × 3.5 = 157.5<br>
+        157.5 × (1 + 0.8/100) = 158.76<br>
+        ceil(158.76) = <strong>159 единиц сырья</strong></p>
+    </div>
+</div>
+{% endblock %}

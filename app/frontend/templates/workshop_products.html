@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Продукция цеха: {{ workshop.name }}</h2>
+    <a href="/workshops/{{ workshop.id }}" class="btn btn-secondary">Назад к цеху</a>
+</div>
+
+{% if products %}
+<div class="table-container">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Наименование</th>
+                <th>Артикул</th>
+                <th>Тип продукции</th>
+                <th>Материал</th>
+                <th>Стоимость (₽)</th>
+                <th>Время в цехе (ч)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ product.name }}</td>
+                <td>{{ product.article }}</td>
+                <td>{{ product.product_type_name }}</td>
+                <td>{{ product.material_name }}</td>
+                <td class="text-right">{{ "{:,.2f}".format(product.min_partner_price).replace(",", " ") }}</td>
+                <td class="text-center">{{ product.manufacturing_time_hours }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="summary">
+    <div class="summary-row">
+        <span class="summary-label">Всего продукции в цехе:</span>
+        <span class="summary-value">{{ products|length }} ед.</span>
+    </div>
+    <div class="summary-row">
+        <span class="summary-label">Общее время производства:</span>
+        <span class="summary-value">{{ "%.2f"|format(products|sum(attribute='manufacturing_time_hours')) }} ч</span>
+    </div>
+</div>
+{% else %}
+<p class="no-data">В этом цехе нет закрепленной продукции</p>
+{% endif %}
+{% endblock %}

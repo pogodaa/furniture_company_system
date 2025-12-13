@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="error-container">
+    <div class="error-code">{{ status_code }}</div>
+    <h2>{{ error_title }}</h2>
+    <p class="error-message">{{ error_detail }}</p>
+    
+    <div class="error-actions">
+        <a href="/" class="btn btn-primary">На главную</a>
+        <a href="javascript:history.back()" class="btn btn-secondary">Назад</a>
+    </div>
+</div>
+{% endblock %}

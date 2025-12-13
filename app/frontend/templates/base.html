@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - Мебельная компания</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
+    <link rel="icon" href="{{ url_for('static', path='/images/logo.png') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Хедер -->
+        <header class="header">
+            <div class="logo-container">
+                <img src="{{ url_for('static', path='/images/logo.png') }}" alt="Логотип" class="logo">
+                <h1>Мебельная компания "Профиль"</h1>
+            </div>
+        </header>
+
+        <!-- Основной контент -->
+        <div class="main-content">
+            <!-- Sidebar -->
+            <nav class="sidebar">
+                <ul class="nav-menu">
+                    <li class="nav-item {% if request.url.path == '/' %}active{% endif %}">
+                        <a href="/">Главная</a>
+                    </li>
+                    <li class="nav-item {% if request.url.path.startswith('/products') %}active{% endif %}">
+                        <a href="/products">Продукция</a>
+                    </li>
+                    <li class="nav-item {% if request.url.path.startswith('/workshops') %}active{% endif %}">
+                        <a href="/workshops">Цеха</a>
+                    </li>
+                    <li class="nav-item {% if request.url.path.startswith('/calculations') %}active{% endif %}">
+                        <a href="/calculations">Расчет сырья</a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Контентная область -->
+            <main class="content">
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+
+        <!-- Футер -->
+        <footer class="footer">
+            <p>&copy; 2006–2025 Мебельная компания "Профиль". Все права защищены.</p>
+            <p>Система учета продукции</p>
+        </footer>
+    </div>
+</body>
+</html>

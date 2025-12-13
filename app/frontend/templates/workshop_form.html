@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h2>{{ "Редактирование" if workshop else "Добавление" }} цеха</h2>
+    <a href="/workshops" class="btn btn-secondary">Назад к списку</a>
+</div>
+
+{% if error %}
+<div class="alert alert-error">
+    <strong>Ошибка:</strong> {{ error }}
+</div>
+{% endif %}
+
+<form method="post" class="form-container">
+    <div class="form-group">
+        <label for="name">Название цеха *</label>
+        <input type="text" id="name" name="name" 
+               value="{{ workshop.name if workshop else '' }}" 
+               required minlength="1" maxlength="100">
+        <small class="form-hint">Название цеха (до 100 символов)</small>
+    </div>
+
+    <div class="form-group">
+        <label for="workshop_type">Тип цеха *</label>
+        <select id="workshop_type" name="workshop_type" required>
+            <option value="">Выберите тип...</option>
+            <option value="Проектирование" {% if workshop and workshop.workshop_type == 'Проектирование' %}selected{% endif %}>Проектирование</option>
+            <option value="Обработка" {% if workshop and workshop.workshop_type == 'Обработка' %}selected{% endif %}>Обработка</option>
+            <option value="Сушка" {% if workshop and workshop.workshop_type == 'Сушка' %}selected{% endif %}>Сушка</option>
+            <option value="Сборка" {% if workshop and workshop.workshop_type == 'Сборка' %}selected{% endif %}>Сборка</option>
+            <option value="Производство" {% if workshop and workshop.workshop_type == 'Производство' %}selected{% endif %}>Производство</option>
+        </select>
+        <small class="form-hint">Тип производственного подразделения</small>
+    </div>
+
+    <div class="form-group">
+        <label for="employee_count">Количество человек для производства *</label>
+        <input type="number" id="employee_count" name="employee_count" 
+               min="1" value="{{ workshop.employee_count if workshop else '1' }}" 
+               required>
+        <small class="form-hint">Минимум 1 человек</small>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">
+            {{ "Сохранить изменения" if workshop else "Добавить цех" }}
+        </button>
+        <a href="/workshops" class="btn btn-secondary">Отмена</a>
+    </div>
+</form>
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Детали цеха: {{ workshop.name }}</h2>
+    <a href="/workshops" class="btn btn-secondary">Назад к списку</a>
+</div>
+
+<div class="detail-container">
+    <div class="detail-card">
+        <h3>Основная информация</h3>
+        <div class="detail-row">
+            <span class="detail-label">Название:</span>
+            <span class="detail-value">{{ workshop.name }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Тип цеха:</span>
+            <span class="detail-value">{{ workshop.workshop_type }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Количество сотрудников:</span>
+            <span class="detail-value">{{ workshop.employee_count }} чел.</span>
+        </div>
+    </div>
+
+    <div class="detail-card">
+        <h3>Отчет о производстве</h3>
+        {% if report %}
+        <div class="detail-row">
+            <span class="detail-label">Всего продукции:</span>
+            <span class="detail-value">{{ report.production_data.total_products }} ед.</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Общее время производства:</span>
+            <span class="detail-value">{{ report.production_data.total_manufacturing_hours }} ч</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Среднее время на продукт:</span>
+            <span class="detail-value">{{ report.production_data.average_hours_per_product }} ч</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Производительность труда:</span>
+            <span class="detail-value">{{ report.production_data.employee_productivity }}</span>
+        </div>
+        {% else %}
+        <p class="no-data">Нет данных для отчета</p>
+        {% endif %}
+    </div>
+
+    <div class="detail-card">
+        <h3>Продукция в цехе</h3>
+        {% if products and products.products %}
+        <table class="simple-table">
+            <thead>
+                <tr>
+                    <th>Наименование</th>
+                    <th>Артикул</th>
+                    <th>Тип</th>
+                    <th>Стоимость</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products.products %}
+                <tr>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.article }}</td>
+                    <td>{{ product.product_type_name }}</td>
+                    <td>{{ "{:,.2f}".format(product.min_partner_price).replace(",", " ") }} ₽</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="no-data">В этом цехе нет закрепленной продукции</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

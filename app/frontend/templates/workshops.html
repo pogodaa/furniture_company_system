@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Список цехов</h2>
+    <a href="/workshops/add" class="btn btn-primary">Добавить цех</a>
+</div>
+
+{% if error %}
+<div class="alert alert-error">
+    {{ error }}
+</div>
+{% endif %}
+
+<div class="table-container">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Название цеха</th>
+                <th>Тип цеха</th>
+                <th>Количество человек</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for workshop in workshops %}
+            <tr>
+                <td>{{ workshop.name }}</td>
+                <td>{{ workshop.workshop_type }}</td>
+                <td class="text-center">{{ workshop.employee_count }}</td>
+                <td class="actions">
+                    <a href="/workshops/{{ workshop.id }}" class="btn-action btn-view" title="Детали">
+                        📊
+                    </a>
+                    <a href="/workshops/{{ workshop.id }}/products" class="btn-action btn-info" title="Продукты цеха">
+                        📦
+                    </a>
+                    <a href="/workshops/edit/{{ workshop.id }}" class="btn-action btn-edit" title="Редактировать">
+                        ✏️
+                    </a>
+                    <form action="/workshops/delete/{{ workshop.id }}" method="post" 
+                          onsubmit="return confirm('Вы уверены, что хотите удалить этот цех?');" 
+                          style="display: inline;">
+                        <button type="submit" class="btn-action btn-delete" title="Удалить">
+                            🗑️
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

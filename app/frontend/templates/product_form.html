@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h2>{{ "Редактирование" if product else "Добавление" }} продукции</h2>
+    <a href="/products" class="btn btn-secondary">Назад к списку</a>
+</div>
+
+{% if error %}
+<div class="alert alert-error">
+    <strong>Ошибка:</strong> {{ error }}
+</div>
+{% endif %}
+
+<form method="post" class="form-container">
+    <div class="form-group">
+        <label for="article">Артикул *</label>
+        <input type="text" id="article" name="article" 
+               value="{{ product.article if product else '' }}" 
+               required minlength="1" maxlength="50">
+        <small class="form-hint">Уникальный артикул продукта (до 50 символов)</small>
+    </div>
+
+    <div class="form-group">
+        <label for="name">Наименование *</label>
+        <input type="text" id="name" name="name" 
+               value="{{ product.product_name if product else '' }}" 
+               required minlength="1" maxlength="200">
+        <small class="form-hint">Полное наименование продукта (до 200 символов)</small>
+    </div>
+
+    <div class="form-group">
+        <label for="product_type_id">Тип продукции *</label>
+        <select id="product_type_id" name="product_type_id" required>
+            <option value="">Выберите тип...</option>
+            {% for type in product_types %}
+            <option value="{{ type.id }}" 
+                    {% if product and product.product_type_id == type.id %}selected{% endif %}>
+                {{ type.name }} (коэф. {{ type.coefficient }})
+            </option>
+            {% endfor %}
+        </select>
+        <small class="form-hint">Тип продукции влияет на расчет сырья</small>
+    </div>
+
+    <div class="form-group">
+        <label for="material_id">Основной материал *</label>
+        <select id="material_id" name="material_id" required>
+            <option value="">Выберите материал...</option>
+            {% for material in material_types %}
+            <option value="{{ material.id }}" 
+                    {% if product and product.material_id == material.id %}selected{% endif %}>
+                {{ material.name }} (потери {{ material.loss_percentage }}%)
+            </option>
+            {% endfor %}
+        </select>
+        <small class="form-hint">Материал влияет на расчет потерь сырья</small>
+    </div>
+
+    <div class="form-group">
+        <label for="min_partner_price">Минимальная стоимость для партнера *</label>
+        <input type="number" id="min_partner_price" name="min_partner_price" 
+               step="0.01" min="0.01" 
+               value="{{ product.min_partner_price if product else '0.00' }}" 
+               required>
+        <small class="form-hint">Стоимость в рублях, не может быть отрицательной</small>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">
+            {{ "Сохранить изменения" if product else "Добавить продукт" }}
+        </button>
+        <a href="/products" class="btn btn-secondary">Отмена</a>
+    </div>
+</form>
+{% endblock %}
